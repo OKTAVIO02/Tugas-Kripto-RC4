@@ -1,7 +1,7 @@
 # ==========================================
 # TUGAS KRIPTOGRAFI: IMPLEMENTASI RC4
-# Nama: [Isi Nama Anda]
-# NIM: [Isi NIM Anda]
+# Nama: Oktavio Dwi Prasetyo
+# NIM: 25051204342
 # ==========================================
 
 def ksa(key):
@@ -10,13 +10,13 @@ def ksa(key):
     Tahap inisialisasi S-Box (array S) menggunakan kunci.
     """
     key_length = len(key)
-    # Membuat array S berisi 0 sampai 255
+    
     S = list(range(256)) 
     j = 0
     for i in range(256):
-        # Proses pengacakan posisi array S berdasarkan kunci
+       
         j = (j + S[i] + key[i % key_length]) % 256
-        S[i], S[j] = S[j], S[i]  # Swap/Tukar posisi
+        S[i], S[j] = S[j], S[i]  
     return S
 
 def prga(S):
@@ -29,7 +29,7 @@ def prga(S):
     while True:
         i = (i + 1) % 256
         j = (j + S[i]) % 256
-        S[i], S[j] = S[j], S[i]  # Swap
+        S[i], S[j] = S[j], S[i]  
         K = S[(S[i] + S[j]) % 256]
         yield K
 
@@ -38,26 +38,26 @@ def rc4_process(data, key):
     Proses Utama RC4 (Bisa digunakan untuk Enkripsi maupun Dekripsi)
     Karena XOR bersifat reversibel.
     """
-    # 1. Ubah key dan data menjadi format angka (byte/ASCII)
+    
     key = [ord(c) for c in key]
     data = [ord(c) for c in data]
 
-    # 2. Jalankan KSA (Pembangkitan Kunci internal)
+    
     print(f"[LOG] Memulai KSA dengan kunci...")
     S = ksa(key)
     
-    # 3. Jalankan PRGA & XOR (Enkripsi/Dekripsi)
+    
     keystream = prga(S)
     res = []
     print(f"[LOG] Melakukan proses XOR pada setiap karakter...")
     for char in data:
-        # XOR antara data asli dengan satu byte dari keystream
+
         processed_byte = char ^ next(keystream)
         res.append(processed_byte)
     
     return res
 
-# --- BAGIAN DEMONSTRASI (Main Program) ---
+
 
 if __name__ == "__main__":
     print("=== PROGRAM KRIPTOGRAFI RC4 FROM SCRATCH ===")
@@ -65,16 +65,16 @@ if __name__ == "__main__":
     plaintext = input("Masukkan pesan: ")
     kunci = input("Masukkan kunci (bebas): ")
 
-    # PROSES ENKRIPSI
+  
     print("\n--- TAHAP ENKRIPSI ---")
     encrypted_bytes = rc4_process(plaintext, kunci)
     ciphertext_hex = ''.join([f"{b:02x}" for b in encrypted_bytes])
     print(f"Plaintext  : {plaintext}")
     print(f"Ciphertext (Hex): {ciphertext_hex}")
 
-    # PROSES DEKRIPSI
+   
     print("\n--- TAHAP DEKRIPSI ---")
-    # Menggunakan ciphertext_hex yang diubah kembali ke bytes
+    
     decrypted_bytes = rc4_process("".join([chr(b) for b in encrypted_bytes]), kunci)
     decrypted_text = "".join([chr(b) for b in decrypted_bytes])
     
